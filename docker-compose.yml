@@ -1,0 +1,69 @@
+
+services :
+  webserver:
+    image: nodeserver:1
+    ports:
+      - 8080:8080
+#    environment:
+#      - name=value
+    depends_on:
+      - db
+    networks:
+      mynet1:
+        aliases:
+            - mynet1_webserver
+      mynet2:
+        aliases:
+            - webserver
+
+#    deploy:      ---- 서버 여러개 띄울수있음.
+#      mode : replicated
+#      replicas: 3
+  nginx:
+    image: nginx:1
+    ports:
+      - 80:80
+  #    environment:
+  #      - name=value
+    depends_on:
+      - webserver
+    networks:
+      mynet1:
+        aliases:
+          - nginx
+      mynet2:
+
+    restart: always
+
+
+
+
+  db:
+    image: postgres:17-alpine
+#    env_file:
+#      - fileName
+    environment:
+#      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=qwe1234
+  #    environment:
+  #      - name=value
+    networks:
+      - mynet2
+#
+#    volumes:
+#      - 볼륨이름:/var/lib/postgresql/data
+
+volumes:
+  test_vol:
+    external: true
+
+
+
+networks:
+  mynet1:
+  mynet2:
+
+
+
+
